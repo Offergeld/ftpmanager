@@ -1,0 +1,20 @@
+namespace FtpManager
+{
+    public static class FtpExamples
+    {
+        public static void UploadToFtp()
+        {
+            using (var ftp = new FtpManager("ftp.yourcompany.com", "ftpUser", "ftpPassword"))
+            {
+                if (ftp.ValidConnection)
+                {
+                    // Uploads the file to the root directory
+                    ftp.Upload(@"C:\Users\User\Desktop\NinjaReport.txt");
+
+                    // Uploads the file to the specified directory
+                    ftp.Upload(@"C:\Users\User\Desktop\NinjaReport.txt", "test\test1");
+                }
+            }
+        }
+    }
+}
