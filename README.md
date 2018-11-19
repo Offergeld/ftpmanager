@@ -2,10 +2,10 @@
 Simple FTP Framework for upload, download, rename, test and create. Very easy to use.
 
 
-### Example Usage
+## Example Usage
 
 
-## UPLOAD
+### UPLOAD
 ```
 using (var ftp = new FtpManager("ftp.yourcompany.com", "ftpUser", "ftpPassword"))
 {  	
@@ -20,106 +20,70 @@ using (var ftp = new FtpManager("ftp.yourcompany.com", "ftpUser", "ftpPassword")
 }
 ```
 
-## DOWNLOAD
+### DOWNLOAD
 ```
 using (var ftp = new FtpManager("ftp.yourcompany.com", "ftpUser", "ftpPassword"))
-
-{
-  	
-	if (ftp.ValidConnection)
-  	
-	{
-      		
-		// Downloads the file to the specified client directory
-      		
-		ftp.DownloadFile(@"test\NinjaReport.txt", @"C:\Users\User\Desktop\NinjaReport.txt");
-  	
+{  	
+	if (ftp.ValidConnection)  	
+	{      		
+		// Downloads the file to the specified client directory     		
+		ftp.DownloadFile(@"test\NinjaReport.txt", @"C:\Users\User\Desktop\NinjaReport.txt"); 	
 	}
-
 }
 ```
 
-## RENAME
+### RENAME
 ```
 using (var ftp = new FtpManager("ftp.yourcompany.com", "ftpUser", "ftpPassword"))
-
-{
-   	
-	if (ftp.ValidConnection)
-   	
-	{
-       		
-		// Renames the specified file
-       		
-		ftp.RenameFile(@"test\NinjaReport.txt", "SamuraiReport.txt");
-   	
+{  	
+	if (ftp.ValidConnection)   	
+	{       		
+		// Renames the specified file       		
+		ftp.RenameFile(@"test\NinjaReport.txt", "SamuraiReport.txt");   	
 	}
-
 }
 ```
 
-## CREATE
+### CREATE
 ```
 using (var ftp = new FtpManager("ftp.yourcompany.com", "ftpUser", "ftpPassword"))
-
-{
-	
-	if (ftp.ValidConnection)
-	
-	{
-		
-		// Creates the specified directory
-		
-		ftp.CreateDirectory(@"test\test2\test3");
-   	
+{	
+	if (ftp.ValidConnection)	
+	{		
+		// Creates the specified directory		
+		ftp.CreateDirectory(@"test\test2\test3");  	
 	}
-
 }
 ```
 
-## DELETE
+### DELETE
 ```
 using (var ftp = new FtpManager("ftp.yourcompany.com", "ftpUser", "ftpPassword"))
-
-{
-	
-	if (ftp.ValidConnection)
-	
-	{
-        	
-		// Deletes the specified file
-        	
+{	
+	if (ftp.ValidConnection)	
+	{     	
+		// Deletes the specified file      	
 		ftp.DeleteFile(@"test\NinjaReport.txt");
         	
-
-		// Deletes the whole directory with all files and subfolders
-        	
-		ftp.DeleteDirectory(@"test\test2");
-   	
+		// Deletes the whole directory with all files and subfolders        	
+		ftp.DeleteDirectory(@"test\test2");   	
 	}
-
 }
 ```
 
-## INFORMATIONS
+### INFORMATIONS
 ```
 using (var ftp = new FtpManager("ftp.yourcompany.com", "ftpUser", "ftpPassword"))
 {    	
 	if (ftp.ValidConnection)   	
-	{
-        	
-		// Checks if the specified directory exists
-        	
+	{        	
+		// Checks if the specified directory exists       	
 		var exist = ftp.DirectoryExists(@"test\test2");
-        	
-		
-		// Gets the files and subfolders of the root directory
-        	
+        			
+		// Gets the files and subfolders of the root directory       	
 		var content = ftp.GetDirectoryContent();
         	
-
-		// Gets the files and subfolders of the specified directory
-        	
+		// Gets the files and subfolders of the specified directory       	
 		content = ftp.GetDirectoryContent(@"test\test2\");    	
 	}
 }
