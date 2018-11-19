@@ -3,10 +3,9 @@ Simple FTP Framework for upload, download, rename, test and create. Very easy to
 
 
 
-<h2<UPLOAD</h2>
-
+<h2>UPLOAD</h2>
+<code>
 using (var ftp = new FtpManager("ftp.yourcompany.com", "ftpUser", "ftpPassword"))
-
 {
   	
 	if (ftp.ValidConnection)
@@ -25,6 +24,7 @@ using (var ftp = new FtpManager("ftp.yourcompany.com", "ftpUser", "ftpPassword")
 	}
 
 }
+</code>
 
 
 
