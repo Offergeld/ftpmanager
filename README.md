@@ -4,26 +4,18 @@ Simple FTP Framework for upload, download, rename, test and create. Very easy to
 
 ## Example Usage
 
-`// UPLOAD
+```
+// UPLOAD
 using (var ftp = new FtpManager("ftp.yourcompany.com", "ftpUser", "ftpPassword"))
-
-{
-  	
-	if (ftp.ValidConnection)
-  	
-	{
-     		
-		// Uploads the file to the root directory
-     		
-		ftp.UploadFile(@"C:\Users\User\Desktop\NinjaReport.txt");
-    
+{  	
+	if (ftp.ValidConnection)  	
+	{     		
+		// Uploads the file to the root directory     		
+		ftp.UploadFile(@"C:\Users\User\Desktop\NinjaReport.txt");    
  		
-		// Uploads the file to the specified directory
-     		
-		ftp.UploadFile(@"C:\Users\User\Desktop\NinjaReport.txt", "test\test1");
-  	
+		// Uploads the file to the specified directory     		
+		ftp.UploadFile(@"C:\Users\User\Desktop\NinjaReport.txt", "test\test1");  	
 	}
-
 }
 
 // DOWNLOAD
@@ -124,4 +116,4 @@ using (var ftp = new FtpManager("ftp.yourcompany.com", "ftpUser", "ftpPassword")
 		content = ftp.GetDirectoryContent(@"test\test2\");    	
 	}
 }
-`
+```
