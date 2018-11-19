@@ -2,7 +2,6 @@
 Simple FTP Framework for upload, download, rename, test and create. Very easy to use.
 
 UPLOAD
-<code>
 using (var ftp = new FtpManager("ftp.yourcompany.com", "ftpUser", "ftpPassword"))
 {
   	if (ftp.ValidConnection)
@@ -13,10 +12,8 @@ using (var ftp = new FtpManager("ftp.yourcompany.com", "ftpUser", "ftpPassword")
      		ftp.UploadFile(@"C:\Users\User\Desktop\NinjaReport.txt", "test\test1");
   	}
 }
-  </code>
 
 DOWNLOAD
-<code>
 using (var ftp = new FtpManager("ftp.yourcompany.com", "ftpUser", "ftpPassword"))
 {
   	if (ftp.ValidConnection)
@@ -25,9 +22,7 @@ using (var ftp = new FtpManager("ftp.yourcompany.com", "ftpUser", "ftpPassword")
       		ftp.DownloadFile(@"test\NinjaReport.txt", @"C:\Users\User\Desktop\NinjaReport.txt");
   	}
 }
-  </code>
 
-<code>
 RENAME
 using (var ftp = new FtpManager("ftp.yourcompany.com", "ftpUser", "ftpPassword"))
 {
@@ -37,10 +32,8 @@ using (var ftp = new FtpManager("ftp.yourcompany.com", "ftpUser", "ftpPassword")
        		ftp.RenameFile(@"test\NinjaReport.txt", "SamuraiReport.txt");
    	}
 }
-  </code>
 
 CREATE
-<code>
 using (var ftp = new FtpManager("ftp.yourcompany.com", "ftpUser", "ftpPassword"))
 {
 	if (ftp.ValidConnection)
@@ -49,10 +42,8 @@ using (var ftp = new FtpManager("ftp.yourcompany.com", "ftpUser", "ftpPassword")
 		ftp.CreateDirectory(@"test\test2\test3");
    	}
 }
-  </code>
 
 DELETE
-<code>
 using (var ftp = new FtpManager("ftp.yourcompany.com", "ftpUser", "ftpPassword"))
 {
 	if (ftp.ValidConnection)
@@ -63,10 +54,8 @@ using (var ftp = new FtpManager("ftp.yourcompany.com", "ftpUser", "ftpPassword")
         	ftp.DeleteDirectory(@"test\test2");
    	}
 }
-  </code>
 
 INFORMATIONS
-<code>
 using (var ftp = new FtpManager("ftp.yourcompany.com", "ftpUser", "ftpPassword"))
 {
     	if (ftp.ValidConnection)
@@ -79,4 +68,3 @@ using (var ftp = new FtpManager("ftp.yourcompany.com", "ftpUser", "ftpPassword")
         	fileList = ftp.GetDirectoryContent(@"test\test2\");
     	}
 }
-  </code>
