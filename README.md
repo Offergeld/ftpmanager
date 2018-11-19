@@ -2,10 +2,11 @@
 Simple FTP Framework for upload, download, rename, test and create. Very easy to use.
 
 
-## Example Usage
+### Example Usage
 
+
+## UPLOAD
 ```
-// UPLOAD
 using (var ftp = new FtpManager("ftp.yourcompany.com", "ftpUser", "ftpPassword"))
 {  	
 	if (ftp.ValidConnection)  	
@@ -17,8 +18,10 @@ using (var ftp = new FtpManager("ftp.yourcompany.com", "ftpUser", "ftpPassword")
 		ftp.UploadFile(@"C:\Users\User\Desktop\NinjaReport.txt", "test\test1");  	
 	}
 }
+```
 
-// DOWNLOAD
+## DOWNLOAD
+```
 using (var ftp = new FtpManager("ftp.yourcompany.com", "ftpUser", "ftpPassword"))
 
 {
@@ -34,8 +37,10 @@ using (var ftp = new FtpManager("ftp.yourcompany.com", "ftpUser", "ftpPassword")
 	}
 
 }
+```
 
-// RENAME
+## RENAME
+```
 using (var ftp = new FtpManager("ftp.yourcompany.com", "ftpUser", "ftpPassword"))
 
 {
@@ -51,10 +56,10 @@ using (var ftp = new FtpManager("ftp.yourcompany.com", "ftpUser", "ftpPassword")
 	}
 
 }
+```
 
-
-
-// CREATE
+## CREATE
+```
 using (var ftp = new FtpManager("ftp.yourcompany.com", "ftpUser", "ftpPassword"))
 
 {
@@ -70,8 +75,10 @@ using (var ftp = new FtpManager("ftp.yourcompany.com", "ftpUser", "ftpPassword")
 	}
 
 }
+```
 
-// DELETE
+## DELETE
+```
 using (var ftp = new FtpManager("ftp.yourcompany.com", "ftpUser", "ftpPassword"))
 
 {
@@ -92,10 +99,10 @@ using (var ftp = new FtpManager("ftp.yourcompany.com", "ftpUser", "ftpPassword")
 	}
 
 }
+```
 
-
-
-// INFORMATIONS
+## INFORMATIONS
+```
 using (var ftp = new FtpManager("ftp.yourcompany.com", "ftpUser", "ftpPassword"))
 {    	
 	if (ftp.ValidConnection)   	
