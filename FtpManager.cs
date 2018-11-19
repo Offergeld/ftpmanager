@@ -1,41 +1,14 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Text;
 
-namespace FtpManager
+namespace Offergeld.FtpManager
 {
     public class FtpManager : IDisposable
     {
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="FtpManager"/> class.
-        /// </summary>
-        /// <param name="ftpServer">The adress.</param>
-        /// <param name="user">The user.</param>
-        /// <param name="password">The password.</param>
-        public FtpManager(string ftpServer, string user, string password)
-        {
-            this.Server = ftpServer;
-            this.User = user;
-            this.Password = password;
-            this.CheckConnection();
-        }
-
-        /// <summary>
-        ///     Gets or sets the password.
-        /// </summary>
-        public string Password { get; set; }
-
-        /// <summary>
-        ///     Gets or sets the server/host.
-        /// </summary>
-        public string Server { get; set; }
-
-        /// <summary>
-        ///     Gets or sets the user.
-        /// </summary>
-        public string User { get; set; }
+        public readonly FtpRegistration Registration = null;
 
         /// <summary>
         ///     Gets a value indicating whether this <see cref="FtpManager"/> has a valid connection.
@@ -46,14 +19,73 @@ namespace FtpManager
         public bool ValidConnection { get; private set; }
 
         /// <summary>
+        ///     Initializes a new instance of the <see cref="FtpManager"/> class.
+        /// </summary>
+        /// <param name="server">The server.</param>
+        /// <param name="user">The user.</param>
+        /// <param name="password">The password.</param>
+        public FtpManager(FtpRegistration registration)
+        {
+            Registration = registration;
+            ValidConnection = ConnectionIsValid();
+        }
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="FtpManager"/> class.
+        /// </summary>
+        /// <param name="server">The server.</param>
+        /// <param name="user">The user.</param>
+        /// <param name="password">The password.</param>
+        public FtpManager(string server, string user, string password)
+        {
+            Registration = new FtpRegistration
+            {
+                Server = server,
+                User = user,
+                Password = password
+            };
+            ValidConnection = ConnectionIsValid();
+        }
+
+        /// <summary>
+        ///     Changes the server.
+        /// </summary>
+        /// <param name="server">The server.</param>
+        public void ChangeServer(string server)
+        {
+            Registration.Server = server;
+            ValidConnection = ConnectionIsValid();
+        }
+
+        /// <summary>
+        ///     Changes the user.
+        /// </summary>
+        /// <param name="user">The user.</param>
+        public void ChangeUser(string user)
+        {
+            Registration.User = user;
+            ValidConnection = ConnectionIsValid();
+        }
+
+        /// <summary>
+        ///     Changes the password.
+        /// </summary>
+        /// <param name="password">The password.</param>
+        public void ChangePassword(string password)
+        {
+            Registration.Password = password;
+            ValidConnection = ConnectionIsValid();
+        }
+
+        /// <summary>
         ///     Creates the specified directory.
         /// </summary>
-        /// <param name="newDirectory">The new directory. Write @"test\test2\test3" for example.</param>
-        public void CreateDirectory(string newDirectory)
+        /// <param name="directory">The new directory. Write @"test\test2\test3" for example.</param>
+        public void CreateDirectory(string directory)
         {
             string rootDirectory = string.Empty;
 
-            foreach (var direcotry in newDirectory.Split('\\'))
+            foreach (var direcotry in directory.Split('\\'))
             {
                 try
                 {
@@ -63,9 +95,9 @@ namespace FtpManager
                         continue;
                     }
 
-                    var ftpWebRequest = (FtpWebRequest)WebRequest.Create(new Uri("ftp://" + this.Server + "/" + rootDirectory + "/" + direcotry));
+                    var ftpWebRequest = (FtpWebRequest)WebRequest.Create(new Uri("ftp://" + Registration.Server + "/" + rootDirectory + "/" + direcotry));
                     rootDirectory = string.Concat(rootDirectory, "/", direcotry);
-                    ftpWebRequest.Credentials = new NetworkCredential(this.User, this.Password);
+                    ftpWebRequest.Credentials = new NetworkCredential(Registration.User, Registration.Password);
                     ftpWebRequest.UseBinary = true;
                     ftpWebRequest.Proxy = null;
                     ftpWebRequest.KeepAlive = false;
@@ -86,13 +118,13 @@ namespace FtpManager
         /// <param name="directory">The directory to delete. Write @"test\test2\test3" for example.</param>
         public void DeleteDirectory(string directory)
         {
-            foreach (var file in this.GetFileList(directory))
-                this.DeleteFile(directory + '\\' + file.Split('/')[file.Split('/').Length - 1]);
+            foreach (var file in GetDirectoryContent(directory))
+                DeleteFile(directory + '\\' + file.Split('/')[file.Split('/').Length - 1]);
 
             try
             {
-                var ftpWebRequest = (FtpWebRequest)WebRequest.Create(new Uri("ftp://" + this.Server + "/" + directory));
-                ftpWebRequest.Credentials = new NetworkCredential(this.User, this.Password);
+                var ftpWebRequest = (FtpWebRequest)WebRequest.Create(new Uri("ftp://" + Registration.Server + "/" + directory));
+                ftpWebRequest.Credentials = new NetworkCredential(Registration.User, Registration.Password);
                 ftpWebRequest.UseBinary = true;
                 ftpWebRequest.Proxy = null;
                 ftpWebRequest.KeepAlive = false;
@@ -111,13 +143,13 @@ namespace FtpManager
         /// <summary>
         ///     Deletes the file.
         /// </summary>
-        /// <param name="ftpFilePath">The file path. Write @"test\NinjaReport.txt" for example.</param>
-        public void DeleteFile(string ftpFilePath)
+        /// <param name="filePath">The file path. Write @"test\NinjaReport.txt" for example.</param>
+        public void DeleteFile(string filePath)
         {
             try
             {
-                var ftpWebRequest = (FtpWebRequest)WebRequest.Create(new Uri("ftp://" + this.Server + "/" + ftpFilePath));
-                ftpWebRequest.Credentials = new NetworkCredential(this.User, this.Password);
+                var ftpWebRequest = (FtpWebRequest)WebRequest.Create(new Uri("ftp://" + Registration.Server + "/" + filePath));
+                ftpWebRequest.Credentials = new NetworkCredential(Registration.User, Registration.Password);
                 ftpWebRequest.UseBinary = true;
                 ftpWebRequest.Proxy = null;
                 ftpWebRequest.KeepAlive = false;
@@ -129,7 +161,7 @@ namespace FtpManager
             }
             catch
             {
-                DeleteDirectory(ftpFilePath);
+                DeleteDirectory(filePath);
             }
         }
 
@@ -143,8 +175,8 @@ namespace FtpManager
         {
             try
             {
-                var ftpWebRequest = (FtpWebRequest)WebRequest.Create("ftp://" + this.Server + "/" + directory);
-                ftpWebRequest.Credentials = new NetworkCredential(this.User, this.Password);
+                var ftpWebRequest = (FtpWebRequest)WebRequest.Create("ftp://" + Registration.Server + "/" + directory);
+                ftpWebRequest.Credentials = new NetworkCredential(Registration.User, Registration.Password);
                 ftpWebRequest.UseBinary = true;
                 ftpWebRequest.Proxy = null;
                 ftpWebRequest.KeepAlive = false;
@@ -165,24 +197,68 @@ namespace FtpManager
         /// </summary>
         public void Dispose()
         {
-            this.Server = null;
-            this.User = null;
-            this.Password = null;
+            Registration.Server = null;
+            Registration.User = null;
+            Registration.Password = null;
+        }
+
+        /// <summary>
+        ///     Gets the specified file.
+        /// </summary>
+        /// <param name="filePath">The ftp file path. Write @"test\NinjaReport.txt" for example.</param>
+        public byte[] GetFile(string filePath)
+        {
+            try
+            {
+                var webClient = new WebClient
+                {
+                    Credentials = new NetworkCredential(Registration.User, Registration.Password)
+                };
+
+                return webClient.DownloadData(new Uri("ftp://" + Registration.Server + "/" + filePath));
+            }
+            catch (WebException ex)
+            {
+                throw ex;
+            }
         }
 
         /// <summary>
         ///     Downloads the specified file.
         /// </summary>
-        /// <param name="ftpFilePath">The ftp file path. Write @"test\NinjaReport.txt" for example.</param>
-        /// <param name="destinationFilePath">The destination file path. Write @"C:\Users\User\Desktop\NinjaReport.txt" for example.</param>
-        public void Download(string ftpFilePath, string destinationFilePath)
+        /// <param name="filePath">The ftp file path. Write @"test\NinjaReport.txt" for example.</param>
+        public byte[] DownloadFile(string filePath)
         {
             try
             {
-                var webClient = new WebClient();
-                webClient.Credentials = new NetworkCredential(this.User, this.Password);
+                var webClient = new WebClient
+                {
+                    Credentials = new NetworkCredential(Registration.User, Registration.Password)
+                };
 
-                var data = webClient.DownloadData(new Uri("ftp://" + this.Server + "/" + ftpFilePath));
+                return webClient.DownloadData(new Uri("ftp://" + Registration.Server + "/" + filePath));
+            }
+            catch (WebException ex)
+            {
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        ///     Downloads the specified file.
+        /// </summary>
+        /// <param name="filePath">The ftp file path. Write @"test\NinjaReport.txt" for example.</param>
+        /// <param name="destinationFilePath">The destination file path. Write @"C:\Users\User\Desktop\NinjaReport.txt" for example.</param>
+        public void DownloadFile(string filePath, string destinationFilePath)
+        {
+            try
+            {
+                var webClient = new WebClient
+                {
+                    Credentials = new NetworkCredential(Registration.User, Registration.Password)
+                };
+
+                var data = webClient.DownloadData(new Uri("ftp://" + Registration.Server + "/" + filePath));
                 var fileStream = File.Create(destinationFilePath);
 
                 fileStream.Write(data, 0, data.Length);
@@ -195,14 +271,14 @@ namespace FtpManager
         }
 
         /// <summary>
-        ///     Gets the file list from specific directory.
+        ///     Gets content list from specific directory.
         /// </summary>
         /// <param name="directory">The directory. Write @"test\" for example. The "\" at the end can be important.</param>
         /// <returns></returns>
-        public List<string> GetFileList(string directory)
+        public List<string> GetDirectoryContent(string directory)
         {
-            var ftpWebRequest = (FtpWebRequest)WebRequest.Create("ftp://" + this.Server + "/" + directory);
-            ftpWebRequest.Credentials = new NetworkCredential(this.User, this.Password);
+            var ftpWebRequest = (FtpWebRequest)WebRequest.Create("ftp://" + Registration.Server + "/" + directory);
+            ftpWebRequest.Credentials = new NetworkCredential(Registration.User, Registration.Password);
             ftpWebRequest.UseBinary = true;
             ftpWebRequest.Proxy = null;
             ftpWebRequest.KeepAlive = false;
@@ -226,25 +302,25 @@ namespace FtpManager
         }
 
         /// <summary>
-        ///     Gets the file list from root directory.
+        ///     Gets content list from root directory.
         /// </summary>
         /// <returns></returns>
-        public List<string> GetFileList()
+        public List<string> GetDirectoryContent()
         {
-            return this.GetFileList(string.Empty);
+            return GetDirectoryContent(string.Empty);
         }
 
         /// <summary>
         ///     Renames the specified file.
         /// </summary>
-        /// <param name="ftpFilePath">The ftp file path. Write @"test\NinjaReport.txt" for example.</param>
+        /// <param name="filePath">The ftp file path. Write @"test\NinjaReport.txt" for example.</param>
         /// <param name="newFileName">The new filename. Write "SamuraiReport.txt" for example.</param>
-        public void Rename(string ftpFilePath, string newFileName)
+        public void RenameFile(string filePath, string newFileName)
         {
             try
             {
-                var ftpWebRequest = (FtpWebRequest)WebRequest.Create(new Uri("ftp://" + this.Server + "/" + ftpFilePath));
-                ftpWebRequest.Credentials = new NetworkCredential(this.User, this.Password);
+                var ftpWebRequest = (FtpWebRequest)WebRequest.Create(new Uri("ftp://" + Registration.Server + "/" + filePath));
+                ftpWebRequest.Credentials = new NetworkCredential(Registration.User, Registration.Password);
                 ftpWebRequest.UseBinary = true;
                 ftpWebRequest.Proxy = null;
                 ftpWebRequest.KeepAlive = false;
@@ -266,17 +342,17 @@ namespace FtpManager
         /// </summary>
         /// <param name="filPath">The client file path. Write @"C:\Users\User\Desktop\SamuraiReport.txt" for example.</param>
         /// <param name="direcotry">The ftp direcotry. Write @"test\test2" for example.</param>
-        public void Upload(string filePath, string directory)
+        public void UploadFile(string filePath, string directory)
         {
             if (directory != string.Empty)
-                this.CreateDirectory(directory);
+                CreateDirectory(directory);
 
             var fileName = filePath.Split('\\')[filePath.Split('\\').Length - 1];
 
             try
             {
-                var ftpWebRequest = (FtpWebRequest)WebRequest.Create(new Uri("ftp://" + this.Server + "/" + directory + fileName));
-                ftpWebRequest.Credentials = new NetworkCredential(this.User, this.Password);
+                var ftpWebRequest = (FtpWebRequest)WebRequest.Create(new Uri("ftp://" + Registration.Server + "/" + directory + fileName));
+                ftpWebRequest.Credentials = new NetworkCredential(Registration.User, Registration.Password);
                 ftpWebRequest.UseBinary = true;
                 ftpWebRequest.Proxy = null;
                 ftpWebRequest.KeepAlive = false;
@@ -309,21 +385,21 @@ namespace FtpManager
         ///     Uploads the specified file.
         /// </summary>
         /// <param name="filePath">The file path. Write @"C:\Users\User\Desktop\SamuraiReport.txt" for example.</param>
-        public void Upload(string filePath)
+        public void UploadFile(string filePath)
         {
-            this.Upload(filePath, string.Empty);
+            UploadFile(filePath, string.Empty);
         }
 
         /// <summary>
         ///     Checks the connection.
         /// </summary>
-        private void CheckConnection()
+        private bool ConnectionIsValid()
         {
             try
             {
                 WebRequest.DefaultWebProxy = null;
-                var ftpWebRequest = (FtpWebRequest)WebRequest.Create(new Uri("ftp://" + this.Server + "/"));
-                ftpWebRequest.Credentials = new NetworkCredential(this.User, this.Password);
+                var ftpWebRequest = (FtpWebRequest)WebRequest.Create(new Uri("ftp://" + Registration.Server + "/"));
+                ftpWebRequest.Credentials = new NetworkCredential(Registration.User, Registration.Password);
                 ftpWebRequest.UseBinary = true;
                 ftpWebRequest.Proxy = null;
                 ftpWebRequest.KeepAlive = false;
@@ -335,11 +411,10 @@ namespace FtpManager
             }
             catch (Exception)
             {
-                this.ValidConnection = false;
-                return;
+                return false;
             }
 
-            this.ValidConnection = true;
+            return true;
         }
     }
 }
